@@ -1,5 +1,5 @@
 <template>
-  <div>Footer...</div>
+  <div class="header">Footer...</div>
 </template>
 
 <script>
@@ -8,5 +8,5 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
 </style>
