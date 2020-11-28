@@ -25,7 +25,7 @@
       /></router-link>
       <div class="header_bottom_search">
         <input />
-          <button @click="search">搜索</button>
+          <button @click.prevent="search">搜索</button>
       </div>
     </div>
   </header>
