@@ -1,7 +1,7 @@
 <template>
   <div>
     Login..
-    <button @click="login">按钮</button>
+    <el-button type="primary" @click="login">按钮</el-button>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   name: "Login",
   methods: {
     login() {
-      reqLogin("13700000000", "111111");
+      reqLogin("13700000000", "11111");
     },
   },
 };

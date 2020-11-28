@@ -23,6 +23,8 @@ import router from "./router";
 // 引入重置样式
 import "./styles/normalize.css";
 
+import './plugins/element';
+
 Vue.config.productionTip = false;
 
 /*

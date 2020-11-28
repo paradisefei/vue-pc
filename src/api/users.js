@@ -6,6 +6,8 @@
 */
 import instance from "@utils/request";
 
+import { Message } from "element-ui";
+
 const reqLogin = (phone, password) => {
   instance({
     /*
@@ -23,8 +25,8 @@ const reqLogin = (phone, password) => {
   }).then((res) => {
     console.log(res);
   }).catch((err) => {
-    console.log(2);
-    console.log(err);
+    console.log(2, err);
+    Message.error("出错了");
   });
 };
 

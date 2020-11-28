@@ -7,6 +7,8 @@
 
   进度条
     引入
+  错误提示
+  按钮
 */
 import axios from "axios";
 
