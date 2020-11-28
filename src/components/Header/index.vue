@@ -24,8 +24,10 @@
         ><img src="../../images/Logo.png" class="header_bottom_img"
       /></router-link>
       <div class="header_bottom_search">
-        <input />
+        <form action="###">
+          <input v-model="searchText" />
           <button @click.prevent="search">搜索</button>
+        </form>
       </div>
     </div>
   </header>
@@ -35,12 +37,68 @@
 /*
   header结构
   点击登录，改变地址
+
+  2.搜索框
+    点击按钮进行搜索，文本框内容作为路由参数
+    当文本为空时，同样要路由显示search
+    当文本为空时，search后没有斜杠
 */
 export default {
   name: "Header",
+  data() {
+    return {
+      searchText: "",
+    };
+  },
   methods: {
+    /*
+      点击按钮进行搜索
+        1.将整个路径拼成一个字符串来传入
+        2.使用命名路由
+    */
+    // search() {
+    //   const { searchText } = this;
+    //   const location = searchText ? `/${searchText}` : "";
+    //   this.$router.push(`/search${location}`);
+    // },
     search() {
-      this.$router.push("/search");
+      /*
+        使用命名路由传参时是用一个对象传入的
+          1.没有路由参数时，路径上没有/search部分，但是会加载search组件；有路由参数时，路径上就会有/search部分
+            要在没有路由参数时也要有/search
+      */
+      const { searchText } = this;
+      // const location = searchText ? `/${searchText}` : "";
+      const location = {
+        name: "search",
+        // params: {
+        //   searchText,
+        // },
+        query: {
+          name: "zs",
+          age: 18,
+        },
+      };
+      if (searchText) {
+        location.params = {
+          searchText,
+        };
+      }
+      /*
+        1.push方法会返回一个promise
+        2.第二个参数处理成功，第三个参数处理失败
+        3.没有传第二个参数和第三个参数时，无法处理
+        4.重复跳转到一个地址，会报错
+      */
+      this.$router.push(
+        location,
+        (res) => {
+          console.log(res);
+        },
+        () => {
+          console.log("hello");
+        },
+      );
     },
   },
 };
@@ -61,7 +119,6 @@ header a:hover {
   display: flex;
 }
 .header_top_warpper {
-  width: 1200px;
   margin: 0 auto;
   font-size: 12px;
   display: flex;

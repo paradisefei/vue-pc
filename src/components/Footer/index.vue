@@ -253,6 +253,7 @@ export default {
 
 <style lang="less" scoped>
 footer {
+  min-width: 1200px;
   background: #eaeaea;
   padding: 20px 0;
   font-size: 14px;
