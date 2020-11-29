@@ -1,80 +1,31 @@
 <template>
   <div class="home">
     <!-- 红线上的大类分类 -->
-    <div class="home_bigCategory">
-      <ul>
-        <li>全部商品分类</li>
-        <li v-for="eachCategory in bigCategory" :key="eachCategory.id">
-          <router-link :to="eachCategory.path">
-            {{ eachCategory.name }}
-          </router-link>
-        </li>
-      </ul>
-    </div>
+    <BigCategory />
     <!-- 轮播图这一整行 -->
-    <div class="home_allCategories">
-      <div class="home_allCategories_left">
-        <!-- 有这多个li,每个li里面除了有名字还有一个div，是绝对定位的，默认状态下是隐藏的，只有在鼠标放上去时才显示 -->
-        <ul>
-          <li v-for="eachCategory in allCategories" :key="eachCategory.id">
-            <a href="#">{{ eachCategory.includes }}</a>
-            <div class="home_allCategories_left_div">hello</div>
-          </li>
-        </ul>
-      </div>
-      <div class="home_allCategories_center"></div>
-      <div class="home_allCategories_right"></div>
-    </div>
+    <AllCategories />
   </div>
 </template>
 
 <script>
+/*
+   1.划分组件
+      红线上方
+      轮播图这一整行
+        左边商品详情
+        轮播图
+        右边快报
+      今日推荐
+      热卖
+*/
+import BigCategory from "./BigCategory/index.vue";
+
+import AllCategories from "./AllCategories/index.vue";
+
 export default {
   name: "Home",
   data() {
     return {
-      bigCategory: [
-        {
-          id: 1,
-          path: "#",
-          name: "服装城",
-        },
-        {
-          id: 2,
-          path: "#",
-          name: "美妆馆",
-        },
-        {
-          id: 3,
-          path: "#",
-          name: "尚品汇超市",
-        },
-        {
-          id: 4,
-          path: "#",
-          name: "全球购",
-        },
-        {
-          id: 5,
-          path: "#",
-          name: "闪购",
-        },
-        {
-          id: 6,
-          path: "#",
-          name: "团购",
-        },
-        {
-          id: 7,
-          path: "#",
-          name: "有趣",
-        },
-        {
-          id: 8,
-          path: "#",
-          name: "秒杀",
-        },
-      ],
       allCategories: [
         {
           id: 1,
@@ -1752,87 +1703,12 @@ export default {
       ],
     };
   },
+  components: {
+    BigCategory,
+    AllCategories,
+  },
 };
 </script>
 
 <style>
-.home_bigCategory {
-  border-bottom: 3px solid red;
-}
-
-.home_bigCategory ul {
-  width: 1200px;
-  margin: 0 auto;
-  display: flex;
-}
-
-.home_bigCategory ul li {
-  padding: 15px 30px;
-}
-
-.home_bigCategory ul li:first-child {
-  width: 210px;
-  height: 48px;
-  line-height: 48px;
-  text-align: center;
-  padding: 0;
-  background: #e1251b;
-  color: white;
-  font-size: 14px;
-}
-
-/* 轮播图这一整行 */
-.home_allCategories {
-  width: 1200px;
-  margin: 5px auto;
-
-  display: flex;
-  justify-content: space-between;
-}
-
-/* 商品具体分类 */
-.home_allCategories_left {
-  width: 210px;
-  height: 460px;
-  position: relative;
-  background: #eeeeee;
-  font-size: 14px;
-}
-/* 全部商品分类竖栏 */
-.home_allCategories_left li {
-  padding: 6px 20px;
-}
-/* 每一个显示隐藏的div */
-.home_allCategories_left_div {
-  width: 730px;
-  height: 460px;
-  background: red;
-  position: absolute;
-  left: 215px;
-  top: 0px;
-
-  display: none;
-}
-.home_allCategories_left li:nth-of-type(2) div {
-  background: black;
-}
-.home_allCategories_left li:nth-of-type(3) div {
-  background: hotpink;
-}
-.home_allCategories_left li:hover div {
-  display: block;
-}
-/* 轮播图 */
-.home_allCategories_center {
-  width: 730px;
-  height: 460px;
-  background: green;
-}
-
-/* 快报 */
-.home_allCategories_right {
-  width: 250px;
-  height: 460px;
-  background: pink;
-}
 </style>

@@ -26,7 +26,6 @@ const instance = axios.create({
 */
 instance.interceptors.request.use((config) => {
   NProgress.start();
-  console.log(1111);
   return config;
 });
 /*

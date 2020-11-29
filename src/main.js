@@ -11,6 +11,9 @@
   5.错误提示
     在响应拦截器的失败回调中使用
     给vue添加element ui
+
+  6.home组件
+
 */
 import Vue from "vue";
 
