@@ -22,7 +22,7 @@ const actions = {
 
 const mutations = {
   REQ_CATEGORIES_M(stateM, res) {
-    state.allCategories = res.slice(0, 15);
+    state.allCategories = res;
   },
 };
 export default ({

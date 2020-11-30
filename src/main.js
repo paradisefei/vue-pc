@@ -15,6 +15,14 @@
   6.使用vuex管理三级分类列表数据
     使用modules进行模块化
 
+  7.点击跳转
+    在home中点击
+      一级
+      二级
+      三级
+      点击进入search组件
+    在search中鼠标hover在全部商品分类上时会出现列表
+
 */
 import Vue from "vue";
 
