@@ -1,12 +1,14 @@
 {
-    "compilerOptions": {
-        "baseUrl":".",
-        "paths":{
-            "@views/*":["03-src/views/*"],
-            "@comps/*":["03-src/components/*"],
-            "@utils/*":["03-src/utils/*"],
-            "@api/*":["03-src/api/*"],
-        },
-    },
-    "exclude":["node_modules"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@views/*": ["./src/views/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@comps/*": ["./src/components/*"],
+      "@store/*": ["./src/store/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@api/*": ["./src/api/*"]
+    }
+  },
+  "exclude": ["node_modules"]
 }

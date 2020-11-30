@@ -1,33 +1,23 @@
-import reqCategories from "@api/allCategories.js";
+// home组件的vuex状态
+import { reqGetBaseCategoryList } from "@api/home";
 
-const state = {
-  allCategories: [],
-};
-
-const getters = {
-
-};
-/*
-  allCategories的数据是需要发送请求来获取的，发送请求的操作放在actions中进行
-*/
-const actions = {
-  async reqCategoriesA(store) {
-    /*
-      将请求回来的数据提交到mutations中去对state进行修改
-    */
-    const res = await reqCategories();
-    store.commit("REQ_CATEGORIES_M", res);
+export default {
+  state: {
+    categoryList: [], // 首页三级分类列表数据
+  },
+  getters: {},
+  actions: {
+    // 获取首页三级分类列表数据
+    async getCategoryList({ commit }) {
+      // 发送请求
+      const categoryList = await reqGetBaseCategoryList();
+      // 触发mutation函数
+      commit("GET_CATEGORY_LIST", categoryList);
+    },
+  },
+  mutations: {
+    GET_CATEGORY_LIST(state, categoryList) {
+      state.categoryList = categoryList.slice(0, 13);
+    },
   },
 };
-
-const mutations = {
-  REQ_CATEGORIES_M(stateM, res) {
-    state.allCategories = res.slice(0, 15);
-  },
-};
-export default ({
-  state,
-  getters,
-  actions,
-  mutations,
-});
