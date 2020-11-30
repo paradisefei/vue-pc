@@ -1,6 +1,8 @@
 import Mock from "mockjs";
 
 import banner from "./banner.json";
+
+import floor from "./floor.json";
 /* 
     服务器的话就有路由路径
     请求
@@ -21,4 +23,13 @@ import banner from "./banner.json";
 Mock.mock("/mock/banner", "get", {
     code: 200,
     "data|4": banner,
+});
+
+/* 
+    name: 长度为4，生成中文标题
+    在vuex中定义变量来存储
+*/
+Mock.mock("/mock/floor", "get", {
+    code: 200,
+    "data|2": floor,
 });

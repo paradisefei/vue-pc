@@ -1,10 +1,11 @@
 // home组件的vuex状态
-import { reqGetBaseCategoryList, reqGetMockBanner } from "@api/home";
+import { reqGetBaseCategoryList, reqGetMockBanner, reqGetMockFloor } from "@api/home";
 
 export default {
   state: {
     categoryList: [], // 首页三级分类列表数据
     carouselList: [],
+    floor: [], // 存储floor数据
   },
   getters: {},
   actions: {
@@ -16,11 +17,19 @@ export default {
       commit("GET_CATEGORY_LIST", categoryList);
     },
     async getMockBanner({ commit }) {
-      console.log(1);
       // 发送请求
       const carouselList = await reqGetMockBanner();
       // 触发mutation函数
       commit("GET_MOCK_BANNER", carouselList);
+    },
+    /* 
+      获取floor模拟数据
+    */
+    async getMockFloor({ commit }) {
+      // 发送请求
+      const floor = await reqGetMockFloor();
+      // 触发mutation函数
+      commit("GET_MOCK_FLOOR", floor);
     },
   },
   mutations: {
@@ -29,6 +38,9 @@ export default {
     },
     GET_MOCK_BANNER(state, carouselList) {
       state.carouselList = carouselList;
+    },
+    GET_MOCK_FLOOR(state, floor) {
+      state.floor = floor;
     },
   },
 };

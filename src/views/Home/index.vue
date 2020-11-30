@@ -10,9 +10,9 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
+    <Floor :floorOne ="floor[0]"/>
     <!--楼层-->
-    <Floor />
+    <Floor :floorOne="floor[1]" />
     <!--商标-->
     <Brand />
   </div>
@@ -27,8 +27,18 @@ import Rank from "./Rank/Rank";
 import TodayRecommend from "./TodayRecommend/TodayRecommend";
 import TypeNav from "@comps/TypeNav";
 
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "Home",
+  computed: {
+    ...mapState({
+      floor: (state) => state.home.floor,
+    }),
+  },
+  methods: {
+    ...mapActions(["getMockFloor"]),
+  },
   components: {
     Brand,
     Floor,
@@ -37,6 +47,10 @@ export default {
     Rank,
     TodayRecommend,
     TypeNav,
+  },
+  mounted() {
+    this.getMockFloor();
+    console.log(this.floor);
   },
 };
 </script>
