@@ -223,9 +223,10 @@ export default {
     },
   },
   mounted() {
-    console.log(this);
+    // console.log(this);
     // console.log(this);
     // 调用vuex的action函数
+    if(this.categoryList.length) return;
     this.getCategoryList();
   },
 };
