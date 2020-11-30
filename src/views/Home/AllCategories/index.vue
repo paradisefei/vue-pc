@@ -1,7 +1,7 @@
 <template>
   <div class="home_allCategories">
     <AllCategoriesLeft />
-    <div class="home_allCategories_center"></div>
+    <!-- <AllCategoriesCenter /> -->
     <div class="home_allCategories_right"></div>
   </div>
 </template>
@@ -21,6 +21,8 @@
 
 import AllCategoriesLeft from "./AllCategories_left/index.vue";
 
+// import AllCategoriesCenter from "./AllCategories_center/index.vue";
+
 export default {
   name: "allCategories",
   data() {
@@ -30,6 +32,7 @@ export default {
   },
   components: {
     AllCategoriesLeft,
+    // AllCategoriesCenter,
   },
 };
 </script>
@@ -47,7 +50,6 @@ export default {
 .home_allCategories_center {
   width: 730px;
   height: 460px;
-  background: green;
 }
 
 /* 快报 */

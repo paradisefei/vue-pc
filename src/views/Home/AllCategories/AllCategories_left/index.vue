@@ -26,28 +26,28 @@
 </template>
 
 <script>
-import reqCategories from "@api/allCategories.js";
+// import reqCategories from "@api/allCategories.js";
+
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "allCategories_left",
-  data() {
-    return {
-      allCategories: [],
-    };
+  computed: {
+    ...mapState({
+      allCategories: (state) => state.home.allCategories,
+      testCount: (state) => state.testCount,
+    }),
   },
-  async mounted() {
-    /*
-      页面挂载成功了之后得到allCategories的数据，由于是具有响应式的，所以就会渲染上去
-    */
-    this.allCategories = await reqCategories();
-    this.allCategories = this.allCategories.slice(0, 15);
-    console.log(this.allCategories);
+  methods: {
+    ...mapActions(["reqCategoriesA"]),
+  },
+  mounted() {
+    this.reqCategoriesA();
   },
 };
 </script>
 
 <style lang="less" scoped>
-
 /* 商品具体分类 */
 .home_allCategories_left {
   width: 210px;
@@ -80,23 +80,31 @@ export default {
 */
 .home_allCategories_left_content {
   display: flex;
+  // flex-wrap: wrap;
 }
 /* 鼠标hover显示隐藏块-h4标题 */
 .home_allCategories_left_content h4 {
-  width: 80px;
+  width: 100px;
   height: 16px;
+  box-sizing: border-box;
   vertical-align: top;
-  padding-right: 10px;
+  padding-right: 15px;
   text-align: right;
 }
-/* 鼠标hover显示隐藏块-ul列表 */
+/* 鼠标hover显示隐藏块-ul列表
+    flex布局，左边盒子给了宽度，单行文本；右边盒子没给宽度，当出现多行文本时，左边盒子的宽度就无效了
+    容器宽度730，左边盒子80，当右边盒子宽度小于650时，左边盒子宽度有效；当右边盒子宽度大于650时，且没有设置换行时
+    flex布局默认情况下如果宽度大了就会压缩盒子自身而不会换行，如果设置了换行就会根据盒子本身来进行换行
+*/
 .home_allCategories_left_content ul {
+  width: 600px;
   display: flex;
   flex-wrap: wrap;
 }
 .home_allCategories_left_content ul li {
-  padding: 0 10px;
+  padding: 0 15px 3px;
   margin-bottom: 5px;
-  border-left: 1px solid black;
+  color: #666;
+  border-left: 1px solid #ccc;
 }
 </style>

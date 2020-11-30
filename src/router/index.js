@@ -9,7 +9,7 @@ import Home from "@views/Home/index.vue";
 import Register from "@views/Register/index.vue";
 // import Register from "../views/Register/index.vue";
 
-import Login from "../views/Login/index.vue";
+import Login from "@views/Login/index.vue";
 
 Vue.use(VueRouter);
 

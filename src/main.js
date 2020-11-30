@@ -12,12 +12,15 @@
     在响应拦截器的失败回调中使用
     给vue添加element ui
 
-  6.home组件
+  6.使用vuex管理三级分类列表数据
+    使用modules进行模块化
 
 */
 import Vue from "vue";
 
 import VueRouter from "vue-router";
+
+import store from "./store";
 
 import App from "./App.vue";
 
@@ -27,6 +30,8 @@ import router from "./router";
 import "./styles/normalize.css";
 
 import './plugins/element';
+
+// import './plugins/swiper';
 
 Vue.config.productionTip = false;
 
@@ -65,4 +70,5 @@ VueRouter.prototype.push = function push(location, onComplete, onAbort) {
 new Vue({
   render: (h) => h(App),
   router,
+  store,
 }).$mount("#app");
