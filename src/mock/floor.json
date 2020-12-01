@@ -2,11 +2,11 @@
     {
         "id|+1": 1,
         "name": "@ctitle(3,6)",
-        "keywords|4-6": [
-            "@ctitle(4,8)"
+        "keywords|4": [
+            "@ctitle(4)"
         ],
         "imgUrl": "@image('210x255', '@color')",
-        "navList|7": [
+        "navList|4": [
             {
                 "url": "#",
                 "text": "@ctitle(2,4)"

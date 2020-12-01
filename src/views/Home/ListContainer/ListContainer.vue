@@ -3,35 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container">
-          <div class="swiper-wrapper">
-            <div
-              class="swiper-slide"
-              v-for="eachCarousel in carouselList"
-              :key="eachCarousel.id"
-            >
-              <img :src="eachCarousel.imgUrl" />
-            </div>
-            <!-- <div class="swiper-slide">
-              Slide2
-              <img src="./images/banner2.jpg" />
-            </div>
-            <div class="swiper-slide">
-              Slide3
-              <img src="./images/banner3.jpg" />
-            </div>
-            <div class="swiper-slide">
-              Slide4
-              <img src="./images/banner4.jpg" />
-            </div> -->
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :carouselList="carouselList"/>
       </div>
       <div class="right">
         <div class="news">
@@ -107,14 +79,23 @@
 </template>
 
 <script>
-import Vue from "vue";
-
-import Swiper from "swiper";
+// import Vue from "vue";
 
 import { mapState, mapActions } from "vuex";
 
+// 引入轮播图组件
+
+import Carousel from "@comps/Carousel/index.vue";
+
 // import { reqGetMockBanner } from "@api/home";
 
+/* 
+  轮播图
+    第一次加载时还没有banners数据
+    当父组件挂载成功时，请求数据，得到的banners是响应式的，就会传入到子组件中，子组件就可以通过props接收到
+    props传过来的数据是不是响应式的
+    但是如果传过来的数据本身就是响应式的，那这个数据就是响应式的？
+*/
 export default {
   name: "ListContainer",
   // data() {
@@ -136,12 +117,53 @@ export default {
     //   console.log(this);
     // },
   },
+  components: {
+    Carousel,
+  },
   async mounted() {
-    /* 
+  /* 
         1.本地数据，放在mounted中初始化
-    */
-   this.getMockBanner();
 
+        先请求资源，再初始化swiper，在mounted中初始化swiper，因为在页面挂载成功时才能找到DOM元素，才能进行初始化
+        页面挂载成功-请求数据-拿到数据初始化swiper-更新用户界面，实现轮播
+          先拿到数据，这个数据又是响应式的，所以此时会重新更新渲染页面
+          数据更新是异步操作，所以要把swipe初始化也变成异步
+
+1.页面基本结构
+<div class="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+      Slide1
+      <img src="./images/banner2.jpg" />
+    </div>
+    <div class="swiper-slide">
+      Slide2
+      <img src="./images/banner2.jpg" />
+    </div>
+    <div class="swiper-slide">
+      Slide3
+      <img src="./images/banner3.jpg" />
+    </div>
+    <div class="swiper-slide">
+      Slide4
+      <img src="./images/banner4.jpg" />
+    </div>
+  </div>
+  <!-- 如果需要分页器 -->
+  <div class="swiper-pagination"></div>
+
+  <!-- 如果需要导航按钮 -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
+2.引入Swiper及需要使用的组件元素
+import Swiper, { Pagination, Navigation, Autoplay } from "swiper";
+Swiper.use([Pagination, Navigation, Autoplay]);
+3.在mounted中
+  请求数据
+  拿到数据以后再调用
+  this.$nextTick(() => {
+    // 在回调中进行swiper的初始化： 有DOM元素-把轮播的结构传入到构造函数中初始化
     new Swiper(".swiper-container", {
       // direction: "vertical", // 垂直切换选项
       loop: true, // 循环模式选项
@@ -150,56 +172,53 @@ export default {
       pagination: {
         el: ".swiper-pagination",
       },
-
       // 如果需要前进后退按钮
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
       },
     });
-  },
-  watch: {
-    // 监视carouselList  一般监视就可以
-    carouselList: {
-      handler() {
-        // 说明carouselList状态数据发了改变, 但界面还没有更新
-        // 只有数组中有数据, 才需要创建swiper对象
-        if (this.carouselList.length === 0) return;
+  }),
+        
 
-        console.log("watch carouselList", this.carouselList.length); // 执行3次行
-        /* 
-        数据绑定流程 ==> 更新状态数据  ==> 同步调用监视的回调函数 ==> 界面就会自动 `异步`更新
-        */
-        // vm.$nextTick( [callback] )
-        // 将回调延迟到下次 DOM 更新循环(更新界面)之后执行。$nextTick()在修改数据之后立即调用，然后等待 DOM 更新
-        // this.$nextTick(() => {// 回调函数在界面更新之后执行
-        Vue.nextTick(() => {
-          // 回调函数在界面更新之后执行
-          // 必须在轮播列表界面显示之后创建
-          new Swiper(this.$refs.swiper, {
-            // 可以, 只会匹配, 当前组件中的对应元素
-            // direction: 'vertical', // 垂直切换选项   默认是水平轮播
-            loop: true, // 循环模式
-
-            // 分页器
-            pagination: {
-              el: ".swiper-pagination",
-            },
-
-            // 前进后退按钮
-            navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
-            },
-          });
-        });
-      },
-      immediate: true, // 在初始显示时就立即执行一次, 默认是false(只有数据改变才立即执行)
-    },
+    */
+  await this.getMockBanner();
+  // // 其中的回调在更新完DOM后触发，且触发一次
+  // this.$nextTick(() => {
+  //   new Swiper(".swiper-container", {
+  //     // direction: "vertical", // 垂直切换选项
+  //     loop: true, // 循环模式选项
+  //     autoplay: true,
+  //     // 如果需要分页器
+  //     pagination: {
+  //       el: ".swiper-pagination",
+  //     },
+  //     // 如果需要前进后退按钮
+  //     navigation: {
+  //       nextEl: ".swiper-button-next",
+  //       prevEl: ".swiper-button-prev",
+  //     },
+  //   });
+  // });
+  // setTimeout(() => {
+  //   new Swiper(".swiper-container", {
+  //     // direction: "vertical", // 垂直切换选项
+  //     loop: true, // 循环模式选项
+  //     autoplay: true,
+  //     // 如果需要分页器
+  //     pagination: {
+  //       el: ".swiper-pagination",
+  //     },
+  //     // 如果需要前进后退按钮
+  //     navigation: {
+  //       nextEl: ".swiper-button-next",
+  //       prevEl: ".swiper-button-prev",
+  //     },
+  //   });
+  // });
   },
 };
 </script>
-
 <style lang="less" scoped>
 .swiper-container {
   width: 730;

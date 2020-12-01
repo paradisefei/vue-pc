@@ -10,9 +10,11 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor :floorOne ="floor[0]"/>
-    <!--楼层-->
-    <Floor :floorOne="floor[1]" />
+    <Floor
+      v-for="(floor, index) in floorState"
+      :key="index"
+      :floor="floor"
+    ></Floor>
     <!--商标-->
     <Brand />
   </div>
@@ -33,7 +35,7 @@ export default {
   name: "Home",
   computed: {
     ...mapState({
-      floor: (state) => state.home.floor,
+      floorState: (state) => state.home.floor,
     }),
   },
   methods: {
@@ -50,7 +52,6 @@ export default {
   },
   mounted() {
     this.getMockFloor();
-    console.log(this.floor);
   },
 };
 </script>
