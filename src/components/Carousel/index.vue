@@ -38,7 +38,7 @@ export default {
     initSwiper() {
       // 回调函数在界面更新之后执行
       // 必须在轮播列表界面显示之后创建
-      new Swiper(this.$refs.swiper, {
+      this.swiper = new Swiper(this.$refs.swiper, {
         // 可以, 只会匹配, 当前组件中的对应元素
         // direction: 'vertical', // 垂直切换选项   默认是水平轮播
         loop: true, // 循环模式
@@ -62,7 +62,7 @@ export default {
       handler() {
         // 说明carouselList状态数据发了改变, 但界面还没有更新
         // 只有数组中有数据, 才需要创建swiper对象
-        if (this.carouselList.length === 0) return;
+        if (this.swiper) return;
 
         // console.log("watch carouselList", this.carouselList.length); // 执行3次行
         /* 
@@ -75,7 +75,7 @@ export default {
           this.initSwiper();
         });
       },
-      immediate: true, // 在初始显示时就立即执行一次, 默认是false(只有数据改变才立即执行)
+      immediate: false, // 在初始显示时就立即执行一次, 默认是false(只有数据改变才立即执行)
     },
   },
   mounted() {
@@ -89,7 +89,7 @@ export default {
             在页面挂载成功请求到数据时，就会渲染Floor组件并把数据传入到对应的组件中
     */
     // 过滤banner中轮播图的情况
-    if (this.carouselList.length) return;
+    if (!this.carouselList.length) return;
     this.initSwiper();
   },
 };

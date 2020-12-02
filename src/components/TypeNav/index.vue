@@ -195,6 +195,7 @@ export default {
     goSearch(e) {
       const { categoryname, categoryid, categorytype } = e.target.dataset; // 元素自定义属性对象
       this.isSearchShow = false;
+      this.isSortShow = false;
       // 需求：如何获取需要的参数？
       // 已知：得到触发事件目标元素
       // 解决：给元素设置自定义属性 data-xxx, 通过自定义属性得到需要的参数
@@ -219,14 +220,18 @@ export default {
           searchText,
         };
       }
-      this.$router.push(location);
+      if (this.$route.path.startsWith("/search")) {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
     },
   },
   mounted() {
     // console.log(this);
     // console.log(this);
     // 调用vuex的action函数
-    if(this.categoryList.length) return;
+    if (this.categoryList.length) return;
     this.getCategoryList();
   },
 };

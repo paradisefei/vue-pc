@@ -3,7 +3,9 @@ import { reqGetProductList } from "@api/search";
 
 export default {
   state: {
-    productList: {},
+    productList: {
+
+    },
   },
   getters: {
     trademarkList(state) {
@@ -14,6 +16,9 @@ export default {
     },
     goodsList(state) {
       return state.productList.goodsList;
+    },
+    total(state) {
+      return state.productList.total;
     },
     totalPages(state) {
       return state.productList.totalPages;

@@ -10,33 +10,127 @@
               <a href="#">全部结果</a>
             </li>
           </ul>
+          <!-- 
+            面包屑中可以显示keyword数据和品牌名
+            1.如果没有内容时就不显示
+            2.点x删除
+           -->
+          <ul class="fl sui-tag">
+            <li class="with-x" v-show="options.keyword" @click="delKeyword">
+              {{ options.keyword }}<i>×</i>
+            </li>
+            <li
+              class="with-x"
+              v-show="options.categoryName"
+              @click="delCategoryName"
+            >
+              {{ options.categoryName }}<i>×</i>
+            </li>
+            <li class="with-x" v-show="options.trademark" @click="delTrademark">
+              {{ options.trademark }}<i>×</i>
+            </li>
+            <!-- 
+              属性是一个数组，数组中每一个元素都是一个面包屑
+
+             -->
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+              @click="delProp(index)"
+            >
+              {{ prop.split(":")[2] + ":" + prop.split(":")[1] }}<i>×</i>
+            </li>
+          </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector :addTrademark="addTrademark" @add-props="addProps" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: options.order.split(':')[0] === '1' }"
+                  @click.prevent="setOrder('1')"
+                >
+                  <!-- 
+                    综合和价格两个按钮的样式
+                      综合
+                        图标字体
+                          1.引入字体
+                          2.引入css样式
+                          3.加载css样式
+                      价格
+                        只有一个图标是全的，另一个是有透明度的
+
+                      需求
+                        1.点击综合，综合按钮有active样式，价格按钮没有
+                          样式使用对象添加
+                          根据order的值来确定是否添加
+                        2.第二次点击综合，改变综合按钮的图标
+                          两个图标
+                            绑定同一个变量
+                          第二次点击时改变isAllDown的驱之
+                            第二次
+                        3.价格按钮
+                            在没有active时两个图标都是有透明度的的
+                            在有active时，才根据情况确定是否透明
+
+                   -->
+                  <a>
+                    综合
+                    <i
+                      :class="{
+                        iconfont: true,
+                        'icon-direction-down': isAllDown,
+                        'icon-direction-up': !isAllDown,
+                      }"
+                    ></i>
+                  </a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  :class="{ active: options.order.split(':')[0] === '2' }"
+                  @click="setOrder('2')"
+                >
+                  <a class="price">
+                    价格
+                    <span>
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-up-filling': true,
+                          deactive:
+                            options.order.split(':')[0] === '2' && isPriceDown,
+                        }"
+                      ></i>
+                      <!-- 
+                        前面为true，不会执行后面
+                          选中综合按钮时，都不要激活，都是false，如果是&&的话就不会执行后面的了
+                          选中价格按钮时，根据变量确定，有一个是true，有一个是false
+                        前面为false，就执行后面
+                       -->
+                      <i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-down-filling': true,
+                          deactive:
+                            options.order.split(':')[0] === '2' && !isPriceDown,
+                        }"
+                      ></i>
+                    </span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -82,7 +176,7 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
+          <!-- <div class="fr page">
             <div class="sui-pagination clearfix">
               <ul>
                 <li class="prev disabled">
@@ -112,7 +206,18 @@
                 <span>共{{ totalPages }}页&nbsp;</span>
               </div>
             </div>
-          </div>
+          </div> -->
+          <!-- 
+              一共有多少数据
+              点击跳转到对应页
+           -->
+          <el-pagination
+            background
+            layout="prev, pager, next, jumper"
+            :total="total"
+            @current-change="handleCurrentChange"
+          >
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -131,25 +236,217 @@ import { mapGetters, mapActions } from "vuex";
     1.请求
       api接口
       导入函数进行请求
+    
+    2.搜索
+      1.文本框输入拖鞋，则params为拖鞋并用这个去请求数据
+        1.再点击具体商品时，修改query参数
+      2.文本框没有内容时，则显示所有数据
+      3.在首页点击商品时，有query参数
+        此时再输入文本进行搜索，则添加params参数
+
+    3.面包屑展示
+
+    4.在非search组件中用push，在search组件中用replace
+
+    5.排序
+      综合排序
+        把order作为参数拿去请求
+
+
 */
 export default {
   name: "Search",
+  data() {
+    return {
+      /* 
+        请求参数，传入这些参数进行请求，根据参数得到相应的数据
+          放到地址栏/不放到地址栏
+        点击修改地址栏路径，根据路由的不同来显示不同的页面
+        根据参数来获取到不同的数据，然后根据这里请求到的数据来渲染
+        参数不同只是确定了请求回来的数据不同
+       */
+      isAllDown: true,
+      isPriceDown: true,
+      options: {
+        category1Id: "",
+        category2Id: "",
+        category3Id: "",
+        categoryName: "",
+        keyword: "",
+        order: "1:desc",
+        pageNo: 1,
+        pageSize: 10,
+        props: [],
+        trademark: "",
+      },
+    };
+  },
   computed: {
-    ...mapGetters(["goodsList", "totalPages"]),
+    ...mapGetters(["goodsList", "totalPages", "total"]),
   },
   methods: {
     ...mapActions(["getProductList"]),
+    /* 
+      修改请求参数然后进行请求
+    */
+    updateAndRequest() {
+      const {
+        category1Id,
+        category2Id,
+        category3Id,
+        categoryName,
+      } = this.$route.query;
+      const { searchText: keyword } = this.$route.params;
+      /*
+      这里只是收集了地址栏上面的数据然后作为参数传入进行请求
+      先是有请求参数数据，然后才是把参数放到地址栏上，要把哪些参数放到地址栏上是可以自己确定的
+    */
+      const options = {
+        ...this.options,
+        category1Id,
+        category2Id,
+        category3Id,
+        categoryName,
+        keyword,
+      };
+      this.options = options;
+      this.getProductList(this.options);
+    },
+    /* 
+      点击keyword的×时删除
+        把options上的keyword置为空，params也要置为空
+    */
+    delKeyword() {
+      this.options.keyword = "";
+      /* 
+        $route上的属性是只读的，不能修改，所以使用push或replace来改变路由地址
+        此时还需要把文本置空：全局事件总线
+          Header绑定
+          Search触发
+      */
+      this.$bus.$emit("clearKeyword");
+      this.$router.replace({
+        name: "search",
+        // 因为是要去掉路由参数，所以保留query参数
+        query: this.$route.query,
+      });
+    },
+    delCategoryName() {
+      this.options.categoryName = "";
+      /* 
+        $route上的属性是只读的，不能修改，所以使用push或replace来改变路由地址
+        此时还需要把文本置空：全局事件总线
+          Header绑定
+          Search触发
+      */
+      this.$router.replace({
+        name: "search",
+        // 因为是要去掉路由参数，所以保留query参数
+        params: this.$route.params,
+      });
+    },
+    /* 
+      点击品牌的函数
+        发请求
+          拿到品牌数据，修改请求参数进行请求
+        把函数传给子组件
+          修改请求参数
+        把所选品牌添加到分类中
+    */
+    addTrademark(trademark) {
+      // console.log(trademark);
+      this.options.trademark = trademark;
+      this.updateAndRequest();
+    },
+    /*
+      删除面包屑分类trademark 
+     */
+    delTrademark() {
+      this.options.trademark = "";
+      this.updateAndRequest();
+    },
+
+    /* 
+      点击属性
+      修改请求参数
+        是一个数组
+      添加属性面包屑分类
+    */
+    addProps(props) {
+      console.log(props);
+      const [id, value, key] = props.split(":");
+      console.log(id, value, key);
+      this.options.props.push(props);
+      this.updateAndRequest();
+    },
+    /* 
+      删除属性面包屑
+      将该项元素从数组中删除
+        使用splice
+    */
+    delProp(index) {
+      this.options.props.splice(index, 1);
+      this.updateAndRequest();
+    },
+
+    /* 
+      点击按钮：综合和价格
+    */
+    setOrder(order) {
+      /* 
+        把order传进来，在options上使用新的数值
+        修改orderType
+      */
+      let [orderNumber, orderType] = this.options.order.split(":");
+      this.options.order = order + ":" + orderType;
+      if (order === orderNumber) {
+        /* 
+          相等表示是第二次点击
+        */
+        if (order === "1") {
+          this.isAllDown = !this.isAllDown;
+          orderType = this.isAllDown ? "desc" : "asc";
+        } else {
+          this.isPriceDown = !this.isPriceDown;
+          orderType = this.isPriceDown ? "desc" : "asc";
+        }
+      } else {
+        if (order === "2") {
+          this.isPriceDown = false;
+          orderType = "asc";
+        } else {
+          orderType = this.isAllDown ? "desc" : "asc";
+        }
+      }
+      console.log(orderType);
+      this.options.order = order + ":" + orderType;
+      this.updateAndRequest();
+    },
+    /* 
+      分页器点击目标页
+        页面要跳转到目标页
+    */
+    handleCurrentChange(val) {
+      this.options.pageNo = val;
+      this.updateAndRequest();
+    },
   },
   components: {
     SearchSelector,
     TypeNav,
   },
-  mounted() {
-    /* 
-      在这里发送请求，但是"trademarkList", "attrsList"是在子组件中使用的
-    */
-    this.getProductList();
+  watch: {
+    $route: {
+      /* 
+        监视到$route的变化就会重新发送请求
+      */
+      handler() {
+        this.updateAndRequest();
+      },
+      immediate: true,
+    },
   },
+  mounted() {},
 };
 </script>
 
@@ -260,6 +557,23 @@ export default {
                 padding: 11px 15px;
                 color: #777;
                 text-decoration: none;
+                span {
+                  // height: 30px;
+                  // width: 30px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  line-height: 8px;
+                  .deactive {
+                    color: rgba(255, 255, 255, 0.5);
+                  }
+                }
+              }
+              a.price {
+                width: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
               }
 
               &.active {

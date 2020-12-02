@@ -4,7 +4,16 @@
       <div class="fl key brand">品牌</div>
       <div class="value logos">
         <ul class="logo-list">
-          <li v-for="trademark in trademarkList" :key="trademark.tmid">
+          <!-- 
+            这里的每一个li都可以点击，点击就会有品牌数据，也就是有了品牌的请求参数的值，然后重新请求
+            要修改请求参数只能是在父祖件中修改，所以函数是从父组件中传过来
+            把参数传进去
+           -->
+          <li
+            v-for="trademark in trademarkList"
+            :key="trademark.tmid"
+            @click="addTrademark(`${trademark.tmId}:${trademark.tmName}`)"
+          >
             {{ trademark.tmName }}
           </li>
         </ul>
@@ -18,7 +27,13 @@
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue, index) in attr.attrValueList" :key="index">
+          <li
+            v-for="(attrValue, index) in attr.attrValueList"
+            :key="index"
+            @click="
+              $emit('add-props', `${attr.attrId}:${attrValue}:${attr.attrName}`)
+            "
+          >
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -35,6 +50,9 @@
 import { mapGetters } from "vuex";
 export default {
   name: "SearchSelector",
+  props: {
+    addTrademark: Function,
+  },
   computed: {
     ...mapGetters(["trademarkList", "attrsList"]),
   },

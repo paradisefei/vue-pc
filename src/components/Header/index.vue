@@ -128,15 +128,20 @@ export default {
           searchText,
         };
       }
-      this.$router.push(
-        location
-        // (res) => {
-        //   console.log("成功", res);
-        // },
-        // (err) => {
-        //   console.log(err);
-        // }
-      );
+      if (this.$route.path.startsWith("/search")) {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
+      // this.$router.push(
+      //   location
+      // (res) => {
+      //   console.log("成功", res);
+      // },
+      // (err) => {
+      //   console.log(err);
+      // }
+      // );
       // .then((res) => {
       //   console.log("成功", res);
       // })
@@ -144,6 +149,11 @@ export default {
       //   console.log("err", err);
       // });
     },
+  },
+  mounted() {
+    this.$bus.$on("clearKeyword", () => {
+      this.searchText = "";
+    });
   },
 };
 </script>

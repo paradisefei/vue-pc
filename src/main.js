@@ -26,7 +26,14 @@
       参数
       返回值
     2.静态页面
+
+    3.点击品牌
+        请求参数改变-返回的数据就会变-重新渲染
+        点击
+    4.点击属性
   
+  5.分页器
+    
 
 */
 // @ts-nocheck
@@ -43,6 +50,8 @@ import "./styles/reset.css";
 // import 'swiper/css/swiper.css';
 import 'swiper/swiper-bundle.css';
 
+import "./styles/iconfont.css";
+
 import "./plugins/element.js";
 
 // 引入mockServer
@@ -52,6 +61,9 @@ Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
+  beforeCreate() {
+    Vue.prototype.$bus = this;
+  },
   render: (h) => h(App),
   // 应用router
   router,
