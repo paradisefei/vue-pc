@@ -104,31 +104,68 @@ export default {
           Uncaught (in promise) NavigationDuplicated: Avoided redundant navigation to current location: "/search".    
       */
       // 获取搜索的数据
-      const { searchText } = this;
-      const { categoryName, categoryId } = this.$route.query;
-      // 编程式导航：原因将来要做搜索功能（要发送请求）
+      // const { searchText } = this;
+      // const { categoryName, categoryId } = this.$route.query;
+      // // 编程式导航：原因将来要做搜索功能（要发送请求）
+      // const location = {
+      //   // path: "/search",
+      //   name: "search", // 使用命名路由
+      //   // params: {
+      //   //   searchText: searchText,
+      //   // },
+      //   // query: {
+      //   //   name: "jack",
+      //   // },
+      // };
+      // if (categoryName) {
+      //   location.query = {
+      //     categoryName,
+      //     categoryId,
+      //   };
+      // }
+      // if (searchText) {
+      //   location.params = {
+      //     searchText,
+      //   };
+      // }
+      //   const {
+      //     category1Id,
+      //     category2Id,
+      //     category3Id,
+      //     categoryName,
+      //   } = this.$route.query;
+      //   const { searchText: keyword } = this.$route.params;
+      //   /*
+      //   这里只是收集了地址栏上面的数据然后作为参数传入进行请求
+      //   先是有请求参数数据，然后才是把参数放到地址栏上，要把哪些参数放到地址栏上是可以自己确定的
+      // */
+      //   const options = {
+      //     ...this.options,
+      //     category1Id,
+      //     category2Id,
+      //     category3Id,
+      //     categoryName,
+      //     keyword,
+      //   };
+      //   this.options = options;
+
+      /* 
+        1.在search组件中，点击搜索时，保留query，把params参数传进去
+      */
       const location = {
         // path: "/search",
-        name: "search", // 使用命名路由
-        // params: {
-        //   searchText: searchText,
-        // },
-        // query: {
-        //   name: "jack",
-        // },
+        name: "search",
+        query: {
+          ...this.$route.query,
+        },
       };
-      if (categoryName) {
-        location.query = {
-          categoryName,
-          categoryId,
-        };
-      }
-      if (searchText) {
+      if (this.searchText) {
         location.params = {
-          searchText,
+          searchText: this.searchText,
         };
       }
       if (this.$route.path.startsWith("/search")) {
+        console.log(location);
         this.$router.replace(location);
       } else {
         this.$router.push(location);
