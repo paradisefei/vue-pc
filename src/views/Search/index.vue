@@ -78,7 +78,6 @@
                         3.价格按钮
                             在没有active时两个图标都是有透明度的的
                             在有active时，才根据情况确定是否透明
-
                    -->
                   <a>
                     综合
@@ -210,14 +209,28 @@
           <!-- 
               一共有多少数据
               点击跳转到对应页
+              下拉选择一共每页显示多少条数据
            -->
-          <el-pagination
+          <!-- <el-pagination
             background
-            layout="prev, pager, next, jumper"
+            layout="prev, pager, next, sizes, jumper"
+            :page-sizes="[5, 10, 15, 20]"
+            :size-change="handleSizeChange"
             :total="total"
             @current-change="handleCurrentChange"
           >
-          </el-pagination>
+          </el-pagination> -->
+          <!-- <Pagination :total="100" :page-size="10"></Pagination> -->
+          <!-- 
+        如果传入的total较少，即只需要1个页面就能够显示
+       -->
+          <Pagination
+            @current-change="handleCurrentChange"
+            :total="total"
+            :page-size="options.pageSize"
+            :pager-count="11"
+            :current-page="options.pageNo"
+          ></Pagination>
         </div>
       </div>
     </div>
@@ -228,6 +241,8 @@
 import SearchSelector from "./SearchSelector/SearchSelector";
 
 import TypeNav from "@comps/TypeNav";
+
+import Pagination from "@comps/Pagination";
 
 import { mapGetters, mapActions } from "vuex";
 
@@ -275,7 +290,7 @@ export default {
         keyword: "",
         order: "1:desc",
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 5,
         props: [],
         trademark: "",
       },
@@ -373,10 +388,9 @@ export default {
       添加属性面包屑分类
     */
     addProps(props) {
-      console.log(props);
-      const [id, value, key] = props.split(":");
-      console.log(id, value, key);
       this.options.props.push(props);
+      this.options.pageNo = 1;
+      console.log(this.options.pageNo);
       this.updateAndRequest();
     },
     /* 
@@ -426,14 +440,26 @@ export default {
       分页器点击目标页
         页面要跳转到目标页
     */
-    handleCurrentChange(val) {
-      this.options.pageNo = val;
+    // handleCurrentChange(val) {
+    //   // console.log(val);
+    //   this.options.pageNo = val;
+    //   this.updateAndRequest();
+    // },
+    /* 选择每页显示多少条数据 */
+    handleSizeChange(pageSize) {
+      console.log("pageSize", pageSize);
+    },
+
+    /* 这个方法是要传到分页器组件中去使用的，传入页码，改变页码，用新的页码重新去请求 */
+    handleCurrentChange(pageNo) {
+      this.options.pageNo = pageNo;
       this.updateAndRequest();
     },
   },
   components: {
     SearchSelector,
     TypeNav,
+    Pagination,
   },
   watch: {
     $route: {
@@ -446,7 +472,6 @@ export default {
       immediate: true,
     },
   },
-  mounted() {},
 };
 </script>
 
