@@ -10,7 +10,13 @@
             使用动态数据
             点击显示对应页的数据
        -->
-    <button class="arrow prev" @click="handlePrev">上一页</button>
+    <button
+      class="arrow prev"
+      @click="myCurrentPage = myCurrentPage - 1"
+      :disabled="myCurrentPage === 1"
+    >
+      上一页
+    </button>
     <button
       v-show="startEnd.end - startEnd.start + 1 >= 0"
       :class="{ active: 1 === myCurrentPage }"
@@ -34,7 +40,13 @@
     >
       {{ totalPage }}
     </button>
-    <button class="arrow next" @click="handleNext">下一页</button>
+    <button
+      class="arrow next"
+      @click="myCurrentPage = myCurrentPage + 1"
+      :disabled="myCurrentPage === totalPage"
+    >
+      下一页
+    </button>
     <button class="total">共{{ total }}条</button>
   </div>
 </template>
@@ -107,16 +119,6 @@ export default {
     // 根据当前页计算开始页和结束页的坐标
     setCurrentPage(item) {
       this.myCurrentPage = item;
-    },
-    // 处理点击上一页按钮
-    handlePrev() {
-      if (this.myCurrentPage === 1) return;
-      this.myCurrentPage = this.myCurrentPage - 1;
-    },
-    // 处理点击下一页按钮
-    handleNext() {
-      if (this.myCurrentPage === this.totalPage) return;
-      this.myCurrentPage = this.myCurrentPage + 1;
     },
   },
   watch: {
