@@ -34,6 +34,8 @@
   
   5.封装分页器
 
+  6.Detail组件
+
 */
 // @ts-nocheck
 import Vue from "vue";

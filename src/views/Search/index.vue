@@ -134,14 +134,31 @@
               </ul>
             </div>
           </div>
+          <!-- 
+            点击图片跳转到Detail路由
+            配置路由
+            引入组件
+              将组件引入到配置路由中
+              需要请求参数，请求参数是params参数
+
+            点击图片，从点击处传入路由参数，每一条的路由参数是确定的，请求时要直接确定好我点击这个时传入的路由参数是什么，就会去选择对应的数据了
+           -->
           <div class="goods-list">
             <ul class="yui3-g">
               <li class="yui3-u-1-5" v-for="goods in goodsList" :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"
+                    <router-link
+                      :to="{
+                        name: 'detail',
+                        params: { id: goods.id },
+                      }"
+                    >
+                      <img :src="goods.defaultImg" />
+                    </router-link>
+                    <!-- <a href="item.html" target="_blank"
                       ><img :src="goods.defaultImg"
-                    /></a>
+                    /></a> -->
                   </div>
                   <div class="price">
                     <strong>
