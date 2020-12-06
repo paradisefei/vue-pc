@@ -192,7 +192,7 @@
               </li>
             </ul>
           </div>
-          <!-- <div class="fr page">
+          <!-- <div class="fr fage">
             <div class="sui-pagination clearfix">
               <ul>
                 <li class="prev disabled">

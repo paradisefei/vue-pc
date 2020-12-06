@@ -100,12 +100,49 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <!-- 
+                  增减商品数量
+                 -->
+                <input autocomplete="off" class="itxt" v-model="goodsCount" />
+                <button
+                  class="plus"
+                  @click="goodsCount++"
+                  :disabled="goodsCount === 20"
+                >
+                  +
+                </button>
+                <button
+                  class="mins"
+                  @click="goodsCount--"
+                  :disabled="goodsCount === 1"
+                >
+                  -
+                </button>
               </div>
-              <div class="add">
-                <a href="javascript:">加入购物车</a>
+              <!-- 
+                点击加入购物车，跳转到加入购物车成功界面
+                  引入组件
+                  配置路由
+
+                点击加入购物车，发送请求
+                  对已有商品数量进行改动，返回成功或失败状态
+                  将商品成功渲染在页面上
+                    商品图片，商品，商品颜色，数量
+                  拿到数据
+                  写请求
+                    使用的时候传入skuId，skuNum
+                    actions函数发请求
+                  
+                  加入到购物车页面只有一件商品
+                    修改的是vuex中的数据
+                    什么时候请求所有购物车数据
+                      点击加入购物车时，先请求所有购物车数据，然后进行加入购物车请求
+
+                  我点的时候就需要知道是添加的哪个数据
+                    点击之后要发送添加购物车的请求，完了之后再跳转，这就是使用编程式导航的最佳例子，点击的时候并不是单纯的跳转，而是要发请求的
+               -->
+              <div class="add" @click="addCart">
+                <a href="javascript:;">加入购物车</a>
               </div>
             </div>
           </div>
@@ -355,8 +392,9 @@
           辅助函数是在挂载之前执行还是在挂载之后执行
           在第一次挂载时，
           先代理创建组件实例，然后再挂载，所以在挂载页面时实例上已经存在mapGetters和mapActions中的数据了，所以第一次挂载时是能找到数据对象，但数据对象本身没有数据，那没有数据的话是无法渲染出来的，是因为空所以没有渲染；如果不初始化的话就找不到数据，找不到数据就会由于undefined没有属性而报错
+      请求购物车数据
 */
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
@@ -368,16 +406,40 @@ export default {
     return {
       // 用于表示是轮播图列表的第几张图，默认是第一张下标为0的元素
       carouselImgIndex: 0,
+      // 增减商品数量中的数量
+      goodsCount: 1,
     };
   },
   computed: {
+    ...mapState({
+      cartList: (state) => state.cartList,
+    }),
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
   },
   methods: {
-    ...mapActions(["getDetailList"]),
+    ...mapActions(["getDetailList", "getAddToCart"]),
     // 定义方法传到轮播组件中，参数是表示点击的是轮播列表中的第几个元素，拿到那个参数来改变carouselImgIndex
     setCarouselImgIndex(index) {
       this.carouselImgIndex = index;
+    },
+    // 点击加入购物车
+    async addCart() {
+      /* 
+        要先发送请求，再跳转
+          获取购物车所有数据
+          添加购物车的请求
+            如果我现在购物车中还没有数据
+      */
+      await this.getAddToCart({
+        skuId: this.skuInfo.id,
+        skuNum: this.goodsCount,
+      });
+      this.$router.push({
+        name: "addcartsuccess",
+        query: {
+          skuNum: this.goodsCount,
+        },
+      });
     },
   },
   components: {
@@ -386,7 +448,7 @@ export default {
     TypeNav,
   },
   mounted() {
-    this.getDetailList(123);
+    this.getDetailList(this.$route.params.id);
   },
 };
 </script>
@@ -559,7 +621,9 @@ export default {
               position: relative;
               float: left;
               margin-right: 15px;
-
+              button {
+                outline: none;
+              }
               .itxt {
                 width: 38px;
                 height: 37px;

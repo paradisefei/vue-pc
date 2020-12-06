@@ -25,7 +25,6 @@ export const reqGetMockBanner = () => {
   请求mock数据-floor
 */
 export const reqGetMockFloor = () => {
-  console.log(1);
   return mockRequest({
     method: "GET",
     url: "/floor",

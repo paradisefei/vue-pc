@@ -7,6 +7,8 @@ import Login from "../views/Login";
 import Register from "../views/Register";
 import Search from "../views/Search";
 import Detail from "../views/Detail";
+import AddCartSuccess from "../views/AddCartSuccess";
+import ShopCart from "../views/ShopCart";
 
 // 重写push和replace方法
 // 目的：为了让编程式导航重复点击时不报错~
@@ -66,6 +68,19 @@ export default new VueRouter({
       name: "detail",
       path: "/detail/:id?",
       component: Detail,
+    },
+    // 配置添加购物车成功的组件路由，skuNum表示商品数量，作为query参数传过来
+    // 路由地址和请求地址不是一样的
+    {
+      name: "addcartsuccess",
+      path: "/addcartsuccess/:skuNum?",
+      component: AddCartSuccess,
+    },
+    // 购物车路由
+    {
+      name: "shopcart",
+      path: "/shopcart",
+      component: ShopCart,
     },
   ],
 });

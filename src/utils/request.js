@@ -6,6 +6,7 @@
       成功：返回成功的Promise，值为成功的数据
       失败：返回失败的Promise，值为失败的原因
 */
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { Message } from "element-ui";
 // 引入进度条插件
@@ -33,7 +34,17 @@ instance.interceptors.request.use(
     // if (token) {
     //   config.headers.token = token;
     // }
+    // 如果浏览器中有userTempId，就不用生成
+    let userTempId = window.localStorage.getItem("userTempId");
+    if (!userTempId) {
+      // 生成userTempId
+      userTempId = uuidv4();
+      // 把userTempId保存在浏览器中
+      window.localStorage.setItem("userTempId", JSON.stringify(userTempId));
+    }
 
+    // 把userTempId添加到请求头
+    config.headers.userTempId = userTempId;
     return config;
   }
   // 初始化Promise.resolve()返回默认成功的Promise，只会触发成功的回调
