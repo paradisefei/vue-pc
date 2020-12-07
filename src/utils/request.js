@@ -91,10 +91,16 @@ instance.interceptors.response.use(
       return response.data.data;
     }
 
-    const { message } = response.data;
+    const { message, data } = response.data;
+
     // 提示错误
-    Message.error(message);
     // 功能失败 --> 返回失败的Promise
+    if (data === "手机号已经存在") {
+      Message.error(data);
+    } else {
+      Message.error(message);
+    }
+
     return Promise.reject(message);
   },
   // 响应失败：当响应状态码不是 2xx

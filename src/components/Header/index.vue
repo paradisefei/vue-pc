@@ -5,7 +5,11 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="$store.state.user.name">
+            <span>{{ $store.state.user.name }}</span>
+            <button class="loginOut" @click="loginOut">退出</button>
+          </p>
+          <p v-else>
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
@@ -56,6 +60,7 @@
 <script>
 /* 
   将另一个文件夹的内容提交到git的一个分支上
+  引入退出登录的actions方法
 */
 export default {
   name: "Header",
@@ -186,6 +191,18 @@ export default {
       //   console.log("err", err);
       // });
     },
+    // 注销
+    async loginOut() {
+      /* 
+        要发送请求，
+          内部成功注销
+          将localStorage数据清空
+          把vuex中的name和token清空
+      */
+      await this.$store.dispatch("logoutAction");
+      // console.log(this.$store.state.user);
+      this.$router.replace("/login");
+    },
   },
   mounted() {
     this.$bus.$on("clearKeyword", () => {
@@ -217,7 +234,10 @@ export default {
   overflow: hidden;
   .loginList {
     float: left;
-
+    .loginOut {
+      margin-left: 10px;
+      padding: 2px 5px;
+    }
     p {
       float: left;
       margin-right: 10px;
@@ -248,6 +268,7 @@ export default {
     background-color: #eaeaea;
     height: 30px;
     line-height: 30px;
+    min-width: 1200px;
   }
 
   & > .bottom {

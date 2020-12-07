@@ -39,13 +39,14 @@
             <button
               href="javascript:void(0)"
               class="mins"
-              :disabled="cart.skuNum === 0"
+              :disabled="cart.skuNum === 1"
               @click="updateSkuNum(cart.skuId, -1)"
             >
               -
             </button>
             <!-- 
               购物车中的数量本来就有一个数量，然后在detail组件中的添加购物车时就可以改变购物车中的数量
+              输入框中的数量可以手动输入，文本框失去焦点
              -->
             <input
               autocomplete="off"
@@ -200,11 +201,19 @@ export default {
     // 全选复选框
     isCheckedAll: {
       get() {
-        return this.cartList.length && this.totalCheckedNum === this.cartList.length;
+        return (
+          this.cartList.length && this.totalCheckedNum === this.cartList.length
+        );
       },
       set(newVal) {
+        /*
+            1.修改服务器中所有商品的isChecked，发请求
+         */
         this.cartList.forEach((cart) => {
-          cart.isChecked = newVal;
+          this.getCheckCart({
+            skuId: cart.skuId,
+            isChecked: +newVal,
+          });
         });
       },
     },

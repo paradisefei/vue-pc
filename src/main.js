@@ -48,6 +48,15 @@
           在每次请求的时候都会生成，所以第一次生成时需要保存在浏览器中，然后再加一个判断，如果浏览器中有就不需要生成
     4.购物车结算
         动态渲染数据，而不是写死
+    
+  8.注册
+      渲染
+  9.登录
+    登录成功跳转到首页后，要把用户名写在Header组件中
+  10.结算
+      登录之后浏览器就不应该有userTempId了，并且需要把在这个userTempId临时Id下添加的商品能在登录成功的用户(token)下使用
+      把userTempId和token一起发送到服务器中，服务器自己能实现把userTempId下的商品加到token下
+        浏览器是否还有userTempId
 */
 // @ts-nocheck
 import Vue from "vue";
