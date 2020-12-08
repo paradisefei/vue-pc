@@ -57,6 +57,22 @@
       登录之后浏览器就不应该有userTempId了，并且需要把在这个userTempId临时Id下添加的商品能在登录成功的用户(token)下使用
       把userTempId和token一起发送到服务器中，服务器自己能实现把userTempId下的商品加到token下
         浏览器是否还有userTempId
+      未登录时会添加商品，在登录以后就把商品添加到登录时的这个状态里面
+        未登录时，点击结算按钮会跳转到登录页面
+        浏览器保存了token，就说明已经登录了
+        先把组件渲染出来
+      注销登录后，购物车列表重新置空
+      把token和userTempId一起添加到请求头中的话，后台自动就会把userTempId下添加的商品移入到token这个账号下，登录之后产生了token，就把token添加到请求头中
+  11.权限验证
+      1.在没有登录的情况下，无法直接通过地址栏进入trade，pay，paysuccess路由，如果进入了，就会跳转到shopcart路由
+      2.路由守卫
+        跳转前，解析时，跳转后
+      3.addsuccess前面一个路由必须是detail路由
+  12.渲染trade组件
+  13.点击提交订单
+      pay组件
+  14.查看订单
+      接口，发送请求
 */
 // @ts-nocheck
 import Vue from "vue";

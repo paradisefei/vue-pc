@@ -3,6 +3,7 @@ import { reqRegister, reqLogin, reqLogout } from "@api/user";
 
 export default {
     state: {
+        // 如果浏览器中保存了就用浏览器中保存的那个值，如果浏览器中没有保存则为空串，浏览器中没有就说明还没有登录
         name: localStorage.getItem("name") || "",
         token: localStorage.getItem("token") || "",
     },
@@ -33,11 +34,13 @@ export default {
         LOGIN_MUTATION(state, res) {
             state.name = res.name;
             state.token = res.token;
-            console.log(state);
         },
         // 注销，修改vuex中的数据
         LOGOUT_MUTATION(state, res) {
             if (!res) {
+                /* 
+                    退出登录的时候只是把state中的name和token置为空
+                */
                 state.name = "";
                 state.token = "";
             }

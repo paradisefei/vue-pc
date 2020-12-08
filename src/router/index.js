@@ -9,6 +9,11 @@ import Search from "../views/Search";
 import Detail from "../views/Detail";
 import AddCartSuccess from "../views/AddCartSuccess";
 import ShopCart from "../views/ShopCart";
+import Trade from "../views/Trade";
+import Pay from "../views/Pay";
+import PaySuccess from "../views/PaySuccess";
+import Center from "../views/Center";
+import store from "../store";
 
 // 重写push和replace方法
 // 目的：为了让编程式导航重复点击时不报错~
@@ -36,7 +41,8 @@ VueRouter.prototype.replace = function (location, onComplete, onAbort) {
 // 安装插件
 Vue.use(VueRouter);
 
-export default new VueRouter({
+const router = new VueRouter({
+  mode: "hash",
   routes: [
     {
       path: "/",
@@ -75,6 +81,20 @@ export default new VueRouter({
       name: "addcartsuccess",
       path: "/addcartsuccess/:skuNum?",
       component: AddCartSuccess,
+      /* 
+        路由独享守卫，该守卫只在我这个路由下独享，只有进入到我这个路由下才会起作用
+          从别的地方跳过来 
+          从这里跳到别的地方
+      */
+      beforeEnter: (to, from, next) => {
+        if (from.name === "detail") {
+          next();
+        } else {
+          next({
+            name: "shopcart",
+          })
+        }
+      },
     },
     // 购物车路由
     {
@@ -82,5 +102,56 @@ export default new VueRouter({
       path: "/shopcart",
       component: ShopCart,
     },
+    // 订单信息路由
+    {
+      name: "trade",
+      path: "/trade",
+      component: Trade,
+    },
+    // 支付路由
+    {
+      name: "pay",
+      path: "/pay",
+      component: Pay,
+    },
+    // 支付成功路由
+    {
+      name: "paysuccess",
+      path: "/paysuccess",
+      component: PaySuccess,
+    },
+    // 中心路由
+    {
+      name: "center",
+      path: "/center/myorder",
+      component: Center,
+    },
   ],
 });
+
+const unLoginToShopCart = ['/trade', '/pay', '/paysuccess'];
+// 配置路由守卫
+router.beforeEach((to, from, next) => {
+  // console.log(to, from, next);
+  /* 
+      全局前置守卫
+        每一次的跳转都会触发这个回调
+        必须调用next
+        to: 要去的目标路由信息
+        from: 离开的路由信息
+      从一个路由跳转到另一个路由时，to可以打印出目标路由信息，from可以打印出离开的路由信息
+  */
+  if (unLoginToShopCart.indexOf(to.path) > -1 && !store.state.user.token) {
+    // 没有登录时，地址栏输入trade，会跳转到shopcart，引入token
+    next({
+      path: "/shopcart"
+    });
+    // 进来了这个判断，执行了next方法，return了之后还会执行后面的打印
+    return;
+  }
+  // 必须要调用next()方法才能跳转，如果没有给参数就是跳转到to，如果给了参数就是跳转到参数表示的那个路由
+  next();
+});
+
+// 路由独享守卫
+export default router;

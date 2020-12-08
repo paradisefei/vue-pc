@@ -173,7 +173,11 @@
           <i class="summoney">{{ totalGoodsPrice }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <!-- 
+            未登录时，点击结算按钮跳转到登录界面
+            绑定点击事件
+           -->
+          <button class="sum-btn" @click="settleAccount">结算</button>
         </div>
       </div>
     </div>
@@ -252,6 +256,7 @@ export default {
       "getAddToCart",
       "getCheckCart",
       "getDeleteCart",
+      "getTradeInfo",
     ]),
     // 增减商品
     updateSkuNum(skuId, skuNum) {
@@ -275,6 +280,28 @@ export default {
       */
       if (window.confirm("确定要删除吗?")) {
         this.getDeleteCart(skuId);
+      }
+    },
+    // 结算按钮点击事件
+    async settleAccount() {
+      /* 
+        如果是未登录状态，则跳转到登录界面
+      */
+      if (!localStorage.getItem("token")) {
+        this.$router.replace("/login");
+      } else {
+        /* 
+        
+        如果是登录状态，跳转到trade路由
+          配置路由
+        发送请求，获取订单交易信息，在Trade组件中也要使用，所以在vuex中管理，在Trade组件挂载的时候请求
+        如果没有勾选任何商品，则无法结算
+       */
+        if (this.totalCheckedNum === 0) {
+          this.$message.error("没有商品可以结算");
+          return;
+        }
+        this.$router.push("/trade");
       }
     },
   },
@@ -484,7 +511,7 @@ export default {
       .sumbtn {
         float: right;
 
-        a {
+        button {
           display: block;
           position: relative;
           width: 96px;
@@ -492,10 +519,16 @@ export default {
           line-height: 52px;
           color: #fff;
           text-align: center;
+          border: none;
+          outline: none;
           font-size: 18px;
           font-family: "Microsoft YaHei";
           background: #e1251b;
           overflow: hidden;
+        }
+        button:hover {
+          cursor: pointer;
+          color: pink;
         }
       }
     }

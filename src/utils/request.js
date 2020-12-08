@@ -5,10 +5,13 @@
     3. 响应拦截器: 
       成功：返回成功的Promise，值为成功的数据
       失败：返回失败的Promise，值为失败的原因
+
+  把登录成功生成的token添加到请求头
 */
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { Message } from "element-ui";
+import store from "../store";
 // 引入进度条插件
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -45,6 +48,9 @@ instance.interceptors.request.use(
 
     // 把userTempId添加到请求头
     config.headers.userTempId = userTempId;
+    // 把token添加到请求头
+    // 在没有登录没有生成token的情况下，值为undefined
+    config.headers.token = store.state.user.token;
     return config;
   }
   // 初始化Promise.resolve()返回默认成功的Promise，只会触发成功的回调

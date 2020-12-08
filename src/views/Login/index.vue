@@ -90,6 +90,8 @@
 */
 import { ValidationProvider, extend } from "vee-validate";
 
+import { mapState } from "vuex";
+
 // 手机号校验
 extend("phoneLogin", {
   // 用于校验的方法
@@ -138,6 +140,17 @@ export default {
       isAutoLogin: true,
     };
   },
+  computed: {
+    ...mapState({
+      token: (state) => state.user.token,
+      name: (state) => state.user.name,
+    }),
+  },
+  created() {
+    if (this.isAutoLogin && this.token) {
+      this.$router.replace("/");
+    }
+  },
   methods: {
     // 提交登录表单
     async loginSubmit() {
@@ -150,6 +163,10 @@ export default {
           如果自动登录是选中状态的话，直接跳转到首页，相当于直接登录，要拿到token和name
           token和name是保存在浏览器中的
           把token和name保存在浏览器中，然后跳转到首页
+
+          如果选择自动登录，则自动登录，拿到浏览器中的token和name
+          退出登录时已经把vuex中的token和name置为空了，当再次点击登录时，如果浏览器中有token的话，就可以直接跳转到首页
+          在login页面中，如果勾选了自动登录，并且有token的话，在路由到login页面时就能直接跳转到首页，在页面挂载成功时，判断是否自动登录和是否有token
       */
 
       try {
@@ -159,11 +176,12 @@ export default {
         this.isLogining = true;
 
         const { phone, password } = this.user;
-        // console.log(phone, password);
+
         await this.$store.dispatch("loginAction", { phone, password });
+        // 登录成功就把name和token保存在浏览器中
         if (this.isAutoLogin) {
-          localStorage.setItem("name", this.$store.state.user.name);
-          localStorage.setItem("token", this.$store.state.user.token);
+          localStorage.setItem("name", this.name);
+          localStorage.setItem("token", this.token);
         }
         this.$router.replace("/");
       } catch {
