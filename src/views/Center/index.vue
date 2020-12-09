@@ -83,7 +83,7 @@
                           record.outTradeNo
                         }}
                         <span class="pull-right delete"
-                          ><img :src="record.imgUrl" /></span
+                          ><img v-lazy="record.imgUrl" /></span
                       ></span>
                     </th>
                   </tr>
@@ -101,7 +101,7 @@
                   >
                     <td width="60%">
                       <div class="typographic">
-                        <img :src="detail.imgUrl" />
+                        <img v-lazy="detail.imgUrl" />
                         <a href="#" class="block-text">{{ detail.skuName }}</a>
                         <span>x{{ detail.skuNum }}</span>
                         <a href="#" class="service">售后申请</a>
@@ -248,7 +248,6 @@ export default {
       /* 
         发送请求，把页码作为参数发送过去
       */
-      console.log(page);
       this.orderList = await reqGetOrderList({ page, limit: 5 });
     },
   },

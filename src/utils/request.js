@@ -7,7 +7,19 @@
       失败：返回失败的Promise，值为失败的原因
 
   把登录成功生成的token添加到请求头
+
+  开发环境
+    在开发环境下，是通过代理来解决跨域问题实现请求
+    代码是运行在编译器的这个服务器上的，和目标服务器不同源，因此通过代理服务器来解决跨域问题
+    在开发环境下使用devServer.proxy 选项来配置代理服务器，注意：使用这种方式只是解决开发环境下的跨域问题，所以生产环境下需要另行设置来解决
+  生产环境
+    在生产环境下，代码也是运行在一个和目标服务器不同源的服务器上
+    
+    在生产环境下和开发环境下都可以直接用最终请求的地址，在开发环境下可以直接配置
+    在生产环境成功运行
 */
+console.log(process.env.NODE_ENV);
+
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { Message } from "element-ui";
@@ -18,7 +30,8 @@ import "nprogress/nprogress.css";
 
 const instance = axios.create({
   //  / 就是当前服务器地址
-  baseURL: "/api", // 公共的基础路径
+  baseURL: "http://182.92.128.115/api", // 公共的基础路径
+  // baseURL: "/api", // 公共的基础路径
   headers: {
     // token: 'xxx' // 不行，登录接口不需要
   },
@@ -97,15 +110,16 @@ instance.interceptors.response.use(
       return response.data.data;
     }
 
-    const { message, data } = response.data;
+    // const { message, data } = response.data;
+    const { message } = response.data;
 
     // 提示错误
     // 功能失败 --> 返回失败的Promise
-    if (data === "手机号已经存在") {
-      Message.error(data);
-    } else {
-      Message.error(message);
-    }
+    // if (data === "手机号已经存在") {
+    //   Message.error(data);
+    // } else {
+    //   Message.error(message);
+    // }
 
     return Promise.reject(message);
   },

@@ -48,7 +48,7 @@
                 <li>电热水器</li> -->
               </ul>
               <!-- <img src="./images/floor-1-1.png" /> -->
-              <img :src="floor.imgUrl" />
+              <img v-lazy="floor.imgUrl" />
             </div>
             <div class="floorBanner">
               <Carousel :carouselList="floor.carouselList"/>
@@ -57,26 +57,26 @@
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
                 <!-- <img src="./images/floor-1-2.png" /> -->
-                <img :src="floor.recommendList[0]" />
+                <img v-lazy="floor.recommendList[0]" />
               </div>
               <div class="floor-conver-pit">
                 <!-- <img src="./images/floor-1-3.png" /> -->
-                <img :src="floor.recommendList[1]" />
+                <img v-lazy="floor.recommendList[1]" />
               </div>
             </div>
             <div class="split center">
               <!-- <img src="./images/floor-1-4.png" /> -->
-              <img :src="floor.bigImg" />
+              <img v-lazy="floor.bigImg" />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
                 <!-- <img src="./images/floor-1-5.png" /> -->
-                <img :src="floor.recommendList[2]" />
+                <img v-lazy="floor.recommendList[2]" />
               </div>
               <div class="floor-conver-pit">
                 <!-- <img src="./images/floor-1-6.png" /> -->
-                <img :src="floor.recommendList[3]" />
+                <img v-lazy="floor.recommendList[3]" />
               </div>
             </div>
           </div>

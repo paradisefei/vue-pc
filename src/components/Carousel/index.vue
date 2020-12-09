@@ -6,7 +6,7 @@
         v-for="eachCarousel in carouselList"
         :key="eachCarousel.id"
       >
-        <img :src="eachCarousel.imgUrl" />
+        <img v-lazy="eachCarousel.imgUrl" />
       </div>
     </div>
     <!-- 如果需要分页器 -->

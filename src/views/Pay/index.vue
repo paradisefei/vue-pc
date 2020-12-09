@@ -120,38 +120,48 @@ export default {
         弹窗
         得到二维码
           发送请求，拿到图片对象
+        
+        选择支付方式
       */
-      const resOfOrder = await reqGetQRCode(this.$route.query.orderId);
+      // 微信支付
+      if (this.payType === 1) {
+        const resOfOrder = await reqGetQRCode(this.$route.query.orderId);
 
-      QRCode.toDataURL(resOfOrder.codeUrl)
-        .then((url) => {
-          this.$alert(`<img src='${url}'><img>`, "请使用微信扫码支付", {
-            confirmButtonText: "我已成功支付",
-            cancelButtonText: "支付中遇到了问题",
-            showCancelButton: true,
-            center: true,
-            dangerouslyUseHTMLString: true,
-          })
-            .then(() => {
-              this.$message({
-                type: "success",
-                message: "支付成功",
-              });
-              // 支付成功跳转到paysuccess
-              this.$router.push({
-                name: "paysuccess",
-              });
+        QRCode.toDataURL(resOfOrder.codeUrl)
+          .then((url) => {
+            this.$alert(`<img src='${url}'><img>`, "请使用微信扫码支付", {
+              confirmButtonText: "我已成功支付",
+              cancelButtonText: "支付中遇到了问题",
+              showCancelButton: true,
+              center: true,
+              dangerouslyUseHTMLString: true,
+              showClose: false,
             })
-            .catch(() => {
-              this.$message({
-                type: "info",
-                message: "请联系前台！",
+              .then(() => {
+                this.$message({
+                  type: "success",
+                  message: "支付成功",
+                });
+                // 支付成功跳转到paysuccess
+                this.$router.push({
+                  name: "paysuccess",
+                });
+              })
+              .catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "请联系前台！",
+                });
               });
-            });
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      } else if (this.payType === -1) {
+        this.$message.error("请选择微信支付");
+      } else {
+        this.$message.error("请选择支付方式");
+      }
     },
   },
 };

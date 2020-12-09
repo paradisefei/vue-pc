@@ -53,7 +53,7 @@
           :key="detail.skuId"
         >
           <li>
-            <img :src="detail.imgUrl" alt="" />
+            <img v-lazy="detail.imgUrl" alt="" />
           </li>
           <li>
             <p>
@@ -192,6 +192,7 @@ export default {
         tradeList: { userAddressList },
         isCheckAddress,
       } = this;
+
       return userAddressList
         ? userAddressList.find((userAddress) => {
             if (userAddress.isDefault === isCheckAddress) {

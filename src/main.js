@@ -73,6 +73,12 @@
       pay组件
   14.查看订单
       接口，发送请求
+  15.图片懒加载
+      对图片而言，图片在进入到视口时再加载
+      下包
+      引入插件
+      使用插件
+  16.解决生产环境下的跨域问题
 */
 // @ts-nocheck
 import Vue from "vue";
@@ -91,6 +97,8 @@ import 'swiper/swiper-bundle.css';
 import "./styles/iconfont.css";
 
 import "./plugins/element.js";
+
+import "./plugins/lazy.js";
 
 // 引入mockServer
 import "./mock/mockServer";

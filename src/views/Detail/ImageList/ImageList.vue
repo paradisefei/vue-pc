@@ -7,7 +7,7 @@
         :key="carousel.id"
         @click="setCarouselImgIndex(index)"
       >
-        <img :src="carousel.imgUrl" />
+        <img v-lazy="carousel.imgUrl" />
       </div>
       <!-- <div class="swiper-slide">
         <img src="../images/s1.png" />
