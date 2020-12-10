@@ -6,13 +6,14 @@
         <div class="goods">
           <div class="left-good">
             <div class="left-pic">
-              <img src="good.skuDefaultImg" />
+              <img :src="checkedAttr.goodsImg" />
             </div>
             <div class="right-info">
               <p class="title">
-                小米红米 Redmi note8 手机 梦幻蓝 全网通(4GB+64GB)
+                {{checkedAttr.goodsName}}
               </p>
-              <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：{{$route.query.skuNum}}</p>
+              <p class="attr" v-for="(attrValue, attrName) in checkedAttr.attrList" :key="attrValue">{{attrName}}：{{attrValue}}</p>
+              <p class="attr">数量：{{$route.query.skuNum}}</p>
             </div>
           </div>
           <div class="right-gocart">
@@ -33,10 +34,21 @@
 
    购物车组件
     配置路由
+  
+  渲染被加入到购物车的商品数据
+    把该有的属性都写上
+  在挂载成功时定义
+
 */
+import { mapState } from "vuex";
 
 export default {
   name: "AddCartSuccess",
+  computed: {
+    ...mapState({
+      checkedAttr: (state) => state.detail.checkedAttr,
+    }),
+  },
 };
 </script>
 

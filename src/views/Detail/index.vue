@@ -86,14 +86,27 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl v-for="spuSaleAttr in spuSaleAttrList" :key="spuSaleAttr.id">
+              <!-- 
+                在当前这个属性栏中，点击某一个属性，该属性高亮，其它属性不高亮，
+               -->
+              <dl
+                v-for="spuSaleAttr in spuSaleAttrList"
+                :key="spuSaleAttr.id"
+                @click="checkAttr(spuSaleAttr, $event)"
+              >
                 <dt class="title">{{ spuSaleAttr.saleAttrName }}</dt>
+                <!-- 
+                  点击属性，给对应的属性添加属性值，再把数据传到addCartSuccess组件
+                  事件委托
+                  每一个属性栏中的所有属性默认情况下isChecked是0，表示未选中，点击某个属性，把该属性的isChecked设为1，点击另一个属性时，先把所有其它属性的isChecked置为0，再把这个属性设为1
+                 -->
                 <dd
                   changepirce="0"
                   v-for="spuSaleAttrValue in spuSaleAttr.spuSaleAttrValueList"
                   :key="spuSaleAttrValue.id"
-                  class="active"
+                  :class="{ active: spuSaleAttrValue.isChecked === '1' }"
                 >
+                  <!-- 属性原本的isChecked=0，表示未被选中，点击将值改为1表示选中，点击修改该属性的isChecked -->
                   {{ spuSaleAttrValue.saleAttrValueName }}
                 </dd>
               </dl>
@@ -140,6 +153,8 @@
 
                   我点的时候就需要知道是添加的哪个数据
                     点击之后要发送添加购物车的请求，完了之后再跳转，这就是使用编程式导航的最佳例子，点击的时候并不是单纯的跳转，而是要发请求的
+                  
+                  点击加入购物车，把属性数据传到添加成功界面，并在那里渲染
                -->
               <div class="add" @click="addCart">
                 <a href="javascript:;">加入购物车</a>
@@ -393,8 +408,11 @@
           在第一次挂载时，
           先代理创建组件实例，然后再挂载，所以在挂载页面时实例上已经存在mapGetters和mapActions中的数据了，所以第一次挂载时是能找到数据对象，但数据对象本身没有数据，那没有数据的话是无法渲染出来的，是因为空所以没有渲染；如果不初始化的话就找不到数据，找不到数据就会由于undefined没有属性而报错
       请求购物车数据
+      选择属性时高亮
+        默认情况下都没有被选中，点击某个属性时，把该属性下的isChecked值改为1，把其他属性的isChecked值改为0
+        遍历
 */
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 import ImageList from "./ImageList/ImageList";
 import Zoom from "./Zoom/Zoom";
@@ -408,19 +426,50 @@ export default {
       carouselImgIndex: 0,
       // 增减商品数量中的数量
       goodsCount: 1,
+      /* 选择的商品属性，在选择之后添加到数据中，在点击购物车之后再把数据传到addCartSuccess组件中 */
     };
   },
   computed: {
     ...mapState({
       cartList: (state) => state.cartList,
+      checkedAttr: (state) => state.detail.checkedAttr,
     }),
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
   },
   methods: {
     ...mapActions(["getDetailList", "getAddToCart"]),
+    ...mapMutations(["BLANK_CHECKED_ATTR"]),
     // 定义方法传到轮播组件中，参数是表示点击的是轮播列表中的第几个元素，拿到那个参数来改变carouselImgIndex
     setCarouselImgIndex(index) {
       this.carouselImgIndex = index;
+    },
+    // 点击选择属性
+    checkAttr(attr, e) {
+      /* 
+          事件委托
+            如果是dt，就直接返回
+            点击加入购物车，把数据传入到addCartSuccess组件
+          把商品名称也传进来
+          把数据放到vuex中管理
+          遍历这个属性栏下的所有属性
+      */
+
+      attr.spuSaleAttrValueList.forEach((eachAttr) => {
+        /* 
+          把所有的isChecked设为0，把目标属性的isChecked设为1
+       */
+        eachAttr.isChecked = "0";
+        if (eachAttr.saleAttrValueName === e.target.innerText) {
+          eachAttr.isChecked = "1";
+        }
+      });
+
+      if (e.target.nodeName.toLowerCase() === "dt") {
+        return;
+      }
+      //  console.log(attr);
+      this.checkedAttr.attrList[attr.saleAttrName.slice(2)] =
+        e.target.innerText || undefined;
     },
     // 点击加入购物车
     async addCart() {
@@ -434,6 +483,8 @@ export default {
         skuId: this.skuInfo.id,
         skuNum: this.goodsCount,
       });
+      // 跳转前触发函数来把数据传到后面一个组件
+      this.$bus.$emit("checked-attr", this.checkedAttr);
       this.$router.push({
         name: "addcartsuccess",
         query: {
@@ -447,8 +498,12 @@ export default {
     Zoom,
     TypeNav,
   },
-  mounted() {
-    this.getDetailList(this.$route.params.id);
+  async mounted() {
+    await this.getDetailList(this.$route.params.id);
+    this.BLANK_CHECKED_ATTR();
+    // 挂载成功，
+    this.checkedAttr.goodsName = this.skuInfo.skuName;
+    this.checkedAttr.goodsImg = this.skuInfo.skuDefaultImg;
   },
 };
 </script>

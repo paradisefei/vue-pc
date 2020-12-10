@@ -159,7 +159,7 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteChecked" href="javascript:;">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -280,6 +280,20 @@ export default {
       */
       if (window.confirm("确定要删除吗?")) {
         this.getDeleteCart(skuId);
+      }
+    },
+    // 删除选中的商品
+    deleteChecked() {
+      /* 
+        遍历所有商品
+      */
+      if (window.confirm("确定要删除选中的商品吗?")) {
+        this.cartList.forEach((cart) => {
+          console.log(cart);
+          if (cart.isChecked) {
+            this.getDeleteCart(cart.skuId);
+          }
+        });
       }
     },
     // 结算按钮点击事件

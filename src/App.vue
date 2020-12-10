@@ -1,7 +1,9 @@
 <template>
   <div>
     <Header />
-    <!-- 加载显示当前路由组件 -->
+    <!-- 加载显示当前路由组件
+      该项目是一个单页面应用，和地址栏路径匹配的组件会被渲染到router-view中
+     -->
     <router-view></router-view>
     <!-- 当不是登录或者注册时就显示 -->
     <!-- <Footer v-if="isFooterShow" /> -->

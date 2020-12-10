@@ -4,6 +4,9 @@ import { reqGetDetailList } from "@api/detail";
 export default {
   state: {
     detailList: { categoryView: {}, skuInfo: { skuImageList: [] }, spuSaleAttrList: [] },
+    checkedAttr: {
+      attrList: {},
+    },
   },
   getters: {
     categoryView(state) {
@@ -26,6 +29,13 @@ export default {
   mutations: {
     GET_DETAIL_LIST(state, detailList) {
       state.detailList = detailList;
+    },
+
+    // 修改checkedAttr
+    BLANK_CHECKED_ATTR(state) {
+      state.checkedAttr = {
+        attrList: {},
+      }
     },
   },
 };

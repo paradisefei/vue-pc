@@ -170,7 +170,6 @@ export default {
         };
       }
       if (this.$route.path.startsWith("/search")) {
-        console.log(location);
         this.$router.replace(location);
       } else {
         this.$router.push(location);
