@@ -51,7 +51,7 @@
             <input
               autocomplete="off"
               type="text"
-              :value="cart.skuNum"
+              :value="cart.skuNum < 1 ? 1 : cart.skuNum"
               minnum="1"
               class="itxt"
             />
